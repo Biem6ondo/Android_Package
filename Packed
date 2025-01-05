@@ -1,0 +1,92 @@
+local Special = game.CoreGui.Phone.rbxOS.com_special_for_control
+
+local Notify_Bar_Setting = Instance.new("ImageButton", Special)
+Notify_Bar_Setting.Size = UDim2.new(1, 0, 1, 0)
+Notify_Bar_Setting.Position = UDim2.new(0, 0, -0.9, 0)
+Notify_Bar_Setting.Name = "Prompt"
+Notify_Bar_Setting.AutoButtonColor = false
+Notify_Bar_Setting.BackgroundTransparency = 1 
+Notify_Bar_Setting.ZIndex = 100000
+Notify_Bar_Setting.BackgroundColor3 = Color3.new(1, 1, 1)
+local dragStart, startPos, isDragging
+
+local function onInputBegan(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragStart = input.Position
+        startPos = Notify_Bar_Setting.Position
+        isDragging = true
+    end
+end
+
+local function onInputEnded(input)
+    if isDragging then
+        isDragging = false
+        if Notify_Bar_Setting.Position.Y.Offset > 150 then
+            Notify_Bar_Setting.Position = UDim2.new(0, 0, -0.9, 450)
+            Notify_Bar_Setting.BackgroundTransparency = 0
+        else
+            Notify_Bar_Setting.Position = UDim2.new(0, 0, -0.9, 0)
+            Notify_Bar_Setting.BackgroundTransparency = 1
+        end
+    end
+end
+
+local function onInputChanged(input)
+    if isDragging then
+        local delta = input.Position - dragStart
+        local newY = startPos.Y.Offset + delta.Y
+        Notify_Bar_Setting.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset, startPos.Y.Scale, math.clamp(newY, 0, 450))
+        
+        local transparency = 1 - (newY / 450)
+        Notify_Bar_Setting.BackgroundTransparency = math.clamp(transparency, 0, 1)
+        
+        -- Cập nhật độ trong suốt cho Clock và các đối tượng con khác
+        for _, child in pairs(Notify_Bar_Setting:GetChildren()) do
+            if child:IsA("GuiObject") then
+                child.BackgroundTransparency = math.clamp(transparency, 0, 1)
+            end
+        end
+    end
+end
+
+Notify_Bar_Setting.InputBegan:Connect(onInputBegan)
+Notify_Bar_Setting.InputEnded:Connect(onInputEnded)
+Notify_Bar_Setting.InputChanged:Connect(onInputChanged)
+
+local Clock = Instance.new("TextLabel", Notify_Bar_Setting)
+Clock.Size = UDim2.new(0.1, 0, 0.05, 0)
+Clock.BackgroundColor3 = Color3.new(1, 1, 1)
+Clock.Position = UDim2.new(0, 0, 0, 5)
+Clock.TextSize = 15
+Clock.BackgroundTransparency = 1  
+Clock.Text = "???"
+Clock.ZIndex = 100001
+Clock.BorderSizePixel = 0
+
+local day = Instance.new("TextLabel", Notify_Bar_Setting)
+day.Size = UDim2.new(0.2, 0, 0.05, 0)
+day.Position = UDim2.new(0.1, 0, 0, 5)
+day.TextSize = 15
+day.BackgroundTransparency = 1  
+day.Text = "???"
+day.ZIndex = 100001
+day.BackgroundColor3 = Color3.new(1, 1, 1)
+day.BorderSizePixel = 0
+
+local function updateClock()
+    while true do
+        local Clock_H = os.date("%H")
+        local Clock_M = os.date("%M")
+        local Clock_S = os.date("%S")
+        local Clock_D = os.date("%d")
+        local Clock_Y = os.date("%Y")
+        local Clock_m = os.date("%m")
+        
+        Clock.Text = Clock_H .. ":" .. Clock_M .. ":" .. Clock_S
+day.Text = Clock_D .. " " .. Clock_m .. " " .. Clock_Y
+      
+        wait(0)
+    end
+end
+
+spawn(updateClock)
