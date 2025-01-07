@@ -1,4 +1,6 @@
 local Special = game.CoreGui.Phone.rbxOS.com_special_for_control
+local Base = game.CoreGui.Phone.rbxOS.Base
+local Home_Screen = game.CoreGui.Phone.rbxOS.com_homescreen_rbxos
 
 local Notify_Bar_Setting = Instance.new("ImageButton", Special)
 Notify_Bar_Setting.Size = UDim2.new(1, 0, 1, 0)
@@ -40,7 +42,6 @@ local function onInputChanged(input)
         local transparency = 1 - (newY / 450)
         Notify_Bar_Setting.BackgroundTransparency = math.clamp(transparency, 0, 1)
         
-        -- Cập nhật độ trong suốt cho Clock và các đối tượng con khác
         for _, child in pairs(Notify_Bar_Setting:GetChildren()) do
             if child:IsA("GuiObject") then
                 child.BackgroundTransparency = math.clamp(transparency, 0, 1)
@@ -90,3 +91,57 @@ day.Text = Clock_D .. " " .. Clock_m .. " " .. Clock_Y
 end
 
 spawn(updateClock)
+
+-- Setting
+local Setting_App_Fram = Instance.new("ScrollingFrame", Base)
+Setting_App_Fram.Size = UDim2.new(1, 0, 1, 0)
+Setting_App_Fram.BackgroundColor3 = Color3.new(1, 1, 1)
+Setting_App_Fram.Visible = false
+Setting_App_Fram.Name = "Setting"
+
+local Setting_Text = Instance.new("TextLabel", Setting_App_Fram)
+Setting_Text.Position = UDim2.new(0, 50, 0, 100)
+Setting_Text.Text = "Setting"
+Setting_Text.TextSize = 24
+Setting_Text.Size = UDim2.new(0, 100, 0, 50)
+Setting_Text.TextStrokeTransparency = 0
+Setting_Text.BackgroundTransparency = 1
+
+local Setting_Search = Instance.new("TextBox", Setting_App_Fram)
+Setting_Search.Text = ""
+Setting_Search.Position = UDim2.new(0.5, 0, 0, 170)
+Setting_Search.Size = UDim2.new(0.95, 0, 0, 40)
+Setting_Search.AnchorPoint = Vector2.new(0.5, 0)
+Setting_Search.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+
+local Setting_Search_UICorner = Instance.new("UICorner", Setting_Search)
+Setting_Search_UICorner.CornerRadius = UDim.new(1, 0)
+
+-- Setting App
+local Setting_App_Frame = Instance.new("Frame", Home_Screen)
+Setting_App_Frame.Size = UDim2.new(0, 100, 0, 75, 0)
+Setting_App_Frame.Position = UDim2.new(0.3, 0, 0.2, 0)
+Setting_App_Frame.BackgroundTransparency = 1
+
+local Setting_App = Instance.new("ImageButton", Setting_App_Frame)
+Setting_App.Size = UDim2.new(0, 50, 0, 50)
+Setting_App.BackgroundTransparency = 0
+Setting_App.Image = ""
+Setting_App.Position = UDim2.new(0,25, 0, 0, 0)
+Setting_App.MouseButton1Click:Connect(function()
+Home_Screen.Visible = false
+Setting_App_Fram.Visible = true
+end)
+
+Setting_App_UICorner = Instance.new("UICorner", Setting_App)
+Setting_App_UICorner.CornerRadius = UDim.new(1, 0)
+
+local Setting_App_Name = Instance.new("TextLabel", Setting_App_Frame)
+Setting_App_Name.Size = UDim2.new(1, 0, 0.25, 0)
+Setting_App_Name.BackgroundTransparency = 1
+Setting_App_Name.Position = UDim2.new(0, 0, 0.75, 0)
+Setting_App_Name.Text = "Setting"
+Setting_App_Name.TextSize = 10
+Setting_App_Name.TextColor3 = Color3.new(1, 1, 1)
+
+
